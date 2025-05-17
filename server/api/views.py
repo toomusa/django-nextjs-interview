@@ -7,7 +7,7 @@ from django.db.models import QuerySet
 def index(request):
     return HttpResponse("Hello, world! This is the API root.")
 
-from .models import ActivityEvent
+from .models import ActivityEvent, Person
 
 
 # -----------------------------------------------------------------------------
@@ -42,3 +42,25 @@ def random_activity_events(request):
     # Use .values() to get dictionaries of all model fields.
     events = list(events_qs.values())
     return JsonResponse(events, safe=False)
+
+def random_persons(request):
+    """Return up to 5 random Person records for the given customer.
+
+    Query parameters:
+    - customer_org_id (required)
+    """
+
+    customer_org_id = request.GET.get("customer_org_id")
+
+    if not customer_org_id:
+        return JsonResponse(
+            {"error": "'customer_org_id' query parameter is required."},
+            status=400,
+        )
+
+    persons_qs: QuerySet = (
+        Person.objects.filter(customer_org_id=customer_org_id).order_by("?")[:5]
+    )
+
+    persons = list(persons_qs.values())
+    return JsonResponse(persons, safe=False)

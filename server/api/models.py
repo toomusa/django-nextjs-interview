@@ -51,3 +51,28 @@ class ActivityEvent(models.Model):
 
     def __str__(self) -> str:  # pragma: no cover
         return f"{self.channel} | {self.activity[:50]}... @ {self.timestamp.isoformat()}"
+
+class Person(models.Model):
+    """Represents a single person/contact belonging to a customer organisation.
+
+    The field names match the keys present in the persons.jsonl fixture so that
+    the ingestion command can simply unpack the JSON objects into the model
+    constructor (e.g. ``Person(**data)``).
+    """
+
+    # Identifiers
+    customer_org_id = models.CharField(max_length=60)
+    id = models.CharField(max_length=64, primary_key=True)
+
+    # Descriptive data
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email_address = models.EmailField(max_length=255)
+    job_title = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        ordering = ["last_name", "first_name"]
+        # No extra uniqueness constraints needed: `id` is the primary key.
+
+    def __str__(self) -> str:  # pragma: no cover
+        return f"{self.first_name} {self.last_name} <{self.email_address}>"

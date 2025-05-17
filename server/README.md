@@ -33,6 +33,11 @@ python manage.py ingest_activityevents data/account_31crr1tcp2bmcv1fk6pcm0k6ag.j
 
 The command converts epoch-millisecond or ISO-8601 `timestamp` values to timezone-aware datetimes and bulk-inserts the data.
 
+Similarly, `Person` records can be ingested using the `ingest_persons` command:
+```bash
+python manage.py ingest_persons data/persons.jsonl
+```
+
 ---
 
 ## 3. Running the development server
@@ -51,20 +56,29 @@ Django will be available at `http://localhost:8000/`.
 | ------ | ---- | ----------- |
 | GET | `/api/` | Simple health/index page |
 | GET | `/api/events/random/` | Return up to 10 random `ActivityEvent` objects for a customer/account |
+| GET | `/api/people/random/` | Return up to 5 random `Person` objects for a customer |
 
 ### Query parameters (required)
 
 * `customer_org_id` – the customer organisation ID
-* `account_id` – the account identifier
+* `account_id` – the account identifier (only for `/api/events/random/`)
 
-If either parameter is missing, the endpoint returns **400 Bad Request**.
+If any required parameter is missing, the endpoint returns **400 Bad Request**.
 
 #### Example cURL request
+**ActivityEvents:**
 ```bash
 curl "http://localhost:8000/api/events/random/?customer_org_id=org_4m6zyrass98vvtk3xh5kcwcmaf&account_id=account_31crr1tcp2bmcv1fk6pcm0k6ag"
 ```
 
+**Persons:**
+```bash
+curl "http://localhost:8000/api/people/random/?customer_org_id=org_4m6zyrass98vvtk3xh5kcwcmaf"
+```
+
 Example response (truncated):
+
+**ActivityEvents:**
 ```json
 [
   {
@@ -79,6 +93,21 @@ Example response (truncated):
     "record_type": "COMMUNICATION",
     …
   }
+]
+```
+
+**Persons:**
+```json
+[
+  {
+    "customer_org_id": "org_4m6zyrass98vvtk3xh5kcwcmaf",
+    "id": "person_030f5n5539bznv84q4v69360rh",
+    "first_name": "Erin",
+    "last_name": "Poole",
+    "email_address": "ashley56@chang-lewis.biz",
+    "job_title": "Engineer, maintenance (IT)"
+  }
+  // ... more person objects
 ]
 ```
 
