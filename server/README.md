@@ -1,10 +1,9 @@
 # Django API Quick-Start
 
-This Django project provides a simple API for storing and retrieving **ActivityEvent** records.
-
 ---
 
 ## 1. Setup
+This guide assumes you have Python 3 installed on your system.
 
 ```bash
 # (Recommended) Create and activate a virtual environment
@@ -15,32 +14,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Database migrations
-Apply migrations before first use:
-
-```bash
-python manage.py migrate --no-input
-```
-
 ---
 
-## 2. Importing data from JSON Lines
-A custom management command ingests records that match the `ActivityEvent` model schema. Each line in the file must be a valid JSON object.
-
-```bash
-python manage.py ingest_activityevents data/account_31crr1tcp2bmcv1fk6pcm0k6ag.jsonl
-```
-
-The command converts epoch-millisecond or ISO-8601 `timestamp` values to timezone-aware datetimes and bulk-inserts the data.
-
-Similarly, `Person` records can be ingested using the `ingest_persons` command:
-```bash
-python manage.py ingest_persons data/persons.jsonl
-```
-
----
-
-## 3. Running the development server
+## 2. Running the development server
 
 ```bash
 python manage.py runserver 8000
@@ -50,7 +26,9 @@ Django will be available at `http://localhost:8000/`.
 
 ---
 
-## 4. API Endpoints
+## 4. Sample API Endpoints
+
+These API endpoints are provided as reference examples.
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
@@ -115,3 +93,28 @@ Example response (truncated):
 
 Happy hacking! :)
 
+
+## Appendix: Importing data from JSON Lines
+
+If you're a candidate, you should not need to do this, as the `db.sqlite3` file has already been populated with sample data for you.
+
+### Database migrations
+Apply migrations before first use:
+
+```bash
+python manage.py migrate --no-input
+```
+
+---
+
+A custom management command ingests records that match the `ActivityEvent` model schema. Each line in the file must be a valid JSON object.
+```bash
+python manage.py ingest_activityevents data/account_31crr1tcp2bmcv1fk6pcm0k6ag.jsonl
+```
+
+The command converts epoch-millisecond or ISO-8601 `timestamp` values to timezone-aware datetimes and bulk-inserts the data.
+
+Similarly, `Person` records can be ingested using the `ingest_persons` command:
+```bash
+python manage.py ingest_persons data/persons.jsonl
+```
