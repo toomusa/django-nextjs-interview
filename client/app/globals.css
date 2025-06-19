@@ -22,5 +22,166 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Timeline chart styles */
+.timeline-chart .recharts-cartesian-axis-tick-value {
+  font-size: 11px;
+  fill: #000000;
+  font-weight: 500;
+}
+
+.timeline-chart .recharts-cartesian-grid-horizontal line {
+  stroke: #f1f5f9;
+  stroke-width: 1;
+}
+
+.timeline-chart .recharts-cartesian-grid-vertical line {
+  stroke: #f1f5f9;
+  stroke-width: 1;
+}
+
+.timeline-chart .recharts-cartesian-axis-line {
+  stroke: #e2e8f0;
+}
+
+.timeline-chart .recharts-cartesian-axis-tick-line {
+  stroke: #e2e8f0;
+}
+
+/* Active region indicator */
+.active-region-indicator {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Gap indicator styles */
+.gap-indicator {
+  background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+}
+
+/* Enhanced hover states */
+.hover\:scale-110:hover {
+  transform: scale(1.1);
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.transition-colors {
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.transition-transform {
+  transition: transform 0.15s ease-in-out;
+}
+
+/* Table styling improvements */
+thead th {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #000000;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+tbody td {
+  color: #000000;
+}
+
+/* Chart container */
+.timeline-chart {
+  cursor: pointer;
+}
+
+.timeline-chart .recharts-surface {
+  overflow: visible;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Ensure proper text colors */
+.text-black {
+  color: #000000 !important;
+}
+
+/* Word breaking for long content */
+.break-words {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Table column width constraints */
+table {
+  table-layout: fixed;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .min-w-\[1200px\] {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 640px) {
+  .min-w-\[1200px\] {
+    min-width: 700px;
+  }
+}
+
+/* Ensure no text cutoff */
+.overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Direction arrow styling */
+.direction-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

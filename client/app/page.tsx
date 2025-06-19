@@ -1,103 +1,112 @@
-import Image from "next/image";
+/**
+ * Main Application Page Component
+ *
+ * Root page component that orchestrates the Activity Timeline application.
+ * Manages the communication between the minimap and main table components,
+ * handling date navigation and visible range synchronization.
+ */
 
+'use client';
+
+import React, { useState, useCallback } from 'react';
+import { ActivityTimelineTable } from '@/components/ActivityTimelineTable';
+import { ActivityMinimap } from '@/components/ActivityMinimap';
+import { BarChart3 } from 'lucide-react';
+
+/**
+ * Home page component - main entry point for the application
+ */
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // State for tracking the date range currently visible in the main table
+  // Used to sync the blue bars in the minimap
+  const [visibleStartDate, setVisibleStartDate] = useState<string>('');
+  const [visibleEndDate, setVisibleEndDate] = useState<string>('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // State for handling navigation requests from the minimap
+  // When user clicks on a date in the chart, this triggers table navigation
+  const [navigateToDate, setNavigateToDate] = useState<string>('');
+
+  /**
+   * Callback function called by the table when its visible date range changes
+   * Updates the minimap's blue bars to reflect what's currently visible
+   *
+   * @param startDate - Earliest date visible in table (YYYY-MM-DD)
+   * @param endDate - Latest date visible in table (YYYY-MM-DD)
+   */
+  const handleVisibleRangeChange = useCallback((startDate: string, endDate: string) => {
+    setVisibleStartDate(startDate);
+    setVisibleEndDate(endDate);
+  }, []);
+
+  /**
+   * Callback function called when user clicks on a date in the minimap
+   * Triggers navigation in the main table to show events around that date
+   *
+   * @param date - Target date to navigate to (YYYY-MM-DD)
+   */
+  const handleDateClick = useCallback((date: string) => {
+    setNavigateToDate(date);
+  }, []);
+
+  /**
+   * Callback function called when the table has completed navigation
+   * Clears the navigation state to prevent repeated navigation attempts
+   */
+  const handleNavigationComplete = useCallback(() => {
+    setNavigateToDate('');
+  }, []);
+
+  return (
+    // Main page container with light gray background
+    <div className="min-h-screen bg-gray-50">
+      {/* Content container with responsive margins and max width */}
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+
+        {/* Page header section */}
+        <header className="mb-8">
+          {/* Title section with icon and main heading */}
+          <div className="flex items-center space-x-3 mb-4">
+            {/* Blue icon container */}
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-white" />
+            </div>
+            {/* Main page title */}
+            <h1 className="text-3xl font-bold text-black">Activity Timeline</h1>
+          </div>
+
+          {/* Page description */}
+          <p className="text-black max-w-2xl">
+            Interactive timeline showing customer activity events with navigation minimap.
+            Click on any point in the overview chart to jump to that date.
+          </p>
+        </header>
+
+        {/* Main content area with component stack */}
+        <div className="space-y-6">
+
+          {/*
+           * Navigation Minimap Component
+           * Displays activity overview chart with clickable navigation
+           * Receives visible range from table and sends navigation events
+           */}
+          <ActivityMinimap
+            visibleStartDate={visibleStartDate}
+            visibleEndDate={visibleEndDate}
+            onDateClick={handleDateClick}
+          />
+
+          {/*
+           * Activity Timeline Table Component
+           * Main data table with infinite scroll and detailed event information
+           * Sends visible range updates and receives navigation commands
+           */}
+          <ActivityTimelineTable
+            onVisibleRangeChange={handleVisibleRangeChange}
+            navigateToDate={navigateToDate}
+            onNavigationComplete={handleNavigationComplete}
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
